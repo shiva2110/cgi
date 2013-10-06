@@ -1,0 +1,36 @@
+
+  
+public T successor(Node<T> node) {
+	if(node.right!=null) {
+		node = node.right;
+		while(node.left!=null) {
+			node = node.left;
+		}
+		return node.data;
+	} else {
+		while(node.parent!=null && node.parent.left!=node){
+			node = node.parent;
+		}
+		
+		if(node.parent!=null) {
+			return node.parent.data;
+		}
+		return null;		
+	}	
+}
+
+public Node find(Node node, int data) {
+	if(node==null) {
+		return null;
+	}
+
+	if(node.data.equals(data)) {
+		return node;
+	}
+	
+	if(data<node.data) {
+		find(node.left, data);
+	} else {
+		find(node.right, data);
+	}
+}
