@@ -194,6 +194,108 @@ public class Tree<T> {
 		}
 	}
 	
+	public Node LCA(Node A, Node B, Node node) {
+
+		if(A==null || B==null || node==null) {
+			return null;
+		}
+
+		if(node==A || node==B) {
+			return node;
+		}
+
+		boolean Aleft = find(A, node.left);
+		boolean Aright = find(A, node.right);
+		boolean Bleft = find(B, node.left);
+		boolean Bright = find(B, node.right);
+
+		if(Aleft && Bleft) {
+			return LCA(A, B, node.left);
+		} else if(Aright && Bright) {
+			return LCA(A, B, node.right);
+		} else if((Aleft && Bright) || (Aright && Bleft)) {
+			return node;
+		} else {
+			return null;
+		}
+	}
+
+
+
+	public boolean find(Node node, Node root) {
+		if(root == null) {
+			return false;
+		}
+
+		if(root==node) {
+			return true;
+		}
+
+		return find(node, root.left) || find(node, root.right);
+	}
+	
+	
+	public boolean isSubTree(Node node1, Node root2) {
+		if(node1==null) {
+			return false;
+		}
+
+		if(node1.data.equals(root2.data)) {
+			if(treeMatch(node1, root2)) {
+				return true;
+			}
+		}
+
+		return isSubTree(node1.left, root2) ||
+				isSubTree(node1.right, root2);
+	}
+
+
+	public boolean treeMatch(Node node1, Node node2) {
+		if(node2==null) {
+			return true;
+		}
+
+		if(node1==null){
+			return false;
+		}
+
+		if(node1.data.equals(node2.data)) {
+			return treeMatch(node1.left, node2.left) && treeMatch(node1.right, node2.right);
+		}
+
+		return false;	
+	}
+	
+	public void printSumPaths(Node<Integer> node, int sum) {
+		
+		if(node==null) {
+			return;
+		}
+
+		printSumPaths(node, sum, "");
+		printSumPaths(node.left, sum);
+		printSumPaths(node.right, sum);
+
+	}
+
+	public void printSumPaths(Node<Integer> node, int sum, String pathBuilder) {
+		if(node==null){
+			return;
+		}	
+
+		int diff = sum-(node.data);
+		
+
+		String newPath = pathBuilder + "->" + node.data;
+		if(diff==0) {
+			System.out.println(newPath);
+		}
+
+		printSumPaths(node.left, diff, newPath);
+		printSumPaths(node.right, diff, newPath);
+
+	}
 
 }
 
