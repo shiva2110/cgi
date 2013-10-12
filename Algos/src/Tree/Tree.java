@@ -194,6 +194,69 @@ public class Tree<T> {
 		}
 	}
 	
+	public Node LCAOptimized(Node A, Node B) {
+
+		if(A==null || B==null || root==null) {
+			return null;
+		}
+
+		MutableInt depthA = new MutableInt(0); MutableInt depthB = new MutableInt(0);
+		boolean foundA = findDepth(A, root, depthA);
+		boolean foundB = findDepth(B, root, depthB);
+
+		if(!foundA || !foundB) {
+			return null;
+		}
+		
+		if(depthA.value() > depthB.value()) {
+			A = moveUp(A, depthB.value(), depthA.value());
+		} else if(depthB.value() > depthA.value()) {
+			B= moveUp(B, depthA.value(), depthB.value());
+		}
+
+		while(A!=B && A!=null && B!=null) {
+			A = A.parent;	
+			B = B.parent;
+	 	}
+
+		return A;	
+	}
+
+
+	public boolean findDepth(Node node, Node curNode, MutableInt depth) {
+		 if(curNode==null || node==null){
+			return false;
+		 }
+
+		 if(curNode==node) {
+			return true; 
+		}
+		
+		int temp = depth.value();
+		boolean foundLeft = findDepth(node, curNode.left, depth.add(1));
+		if(foundLeft) {
+			return foundLeft;
+		}
+
+		depth.reset(temp);
+		boolean foundRight = findDepth(node, curNode.right, depth.add(1));
+		return foundRight;
+	}
+
+	public Node moveUp(Node node, int targetDepth, int curDepth) {
+
+		if(targetDepth>=curDepth) {
+			return null;
+		}
+
+		while(node!=null && targetDepth<curDepth) {
+			node = node.parent;
+			curDepth = curDepth - 1;
+		}
+		
+		return node;
+	}
+	
 
 }
 

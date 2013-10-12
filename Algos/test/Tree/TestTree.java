@@ -142,6 +142,46 @@ public class TestTree {
 		
 		System.out.println("----------------------------");
 	}
+	
+	@Test
+	public void testLCAOptimized(){
+		
+		System.out.println("----------LCA optimized-----------");
+		Tree tree = new Tree();
+		tree.insert(32);
+		tree.insert(25);
+		tree.insert(46);
+		tree.insert(22);
+		tree.insert(27);
+		tree.insert(24);
+		tree.insert(26);
+		tree.insert(29);
+		tree.insert(33);
+		tree.insert(51);
+		tree.insert(43);
+		
+		Node A = tree.find(tree.root, 26);
+		Node B = tree.find(tree.root, 29);
+		Node node = tree.LCAOptimized(A, B);
+		System.out.println(node.data);
+		
+		A = tree.find(tree.root, 27);
+		B = tree.find(tree.root, 29);
+		node = tree.LCAOptimized(A, B);
+		System.out.println(node.data);
+		
+		A = tree.find(tree.root, 22);
+		B = tree.find(tree.root, 33);
+		node = tree.LCAOptimized(A, B);
+		System.out.println(node.data);
+		
+		A = tree.find(tree.root, 51);
+		B = tree.find(tree.root, 43);
+		node = tree.LCAOptimized(A, B);
+		System.out.println(node.data);
+		
+		System.out.println("----------LCA optimized-----------");
+	}
 }
 
 
