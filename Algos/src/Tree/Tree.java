@@ -194,69 +194,108 @@ public class Tree<T> {
 		}
 	}
 	
-	public Node LCAOptimized(Node A, Node B) {
+	public Node LCA(Node A, Node B, Node node) {
 
-		if(A==null || B==null || root==null) {
+		if(A==null || B==null || node==null) {
 			return null;
 		}
 
-		MutableInt depthA = new MutableInt(0); MutableInt depthB = new MutableInt(0);
-		boolean foundA = findDepth(A, root, depthA);
-		boolean foundB = findDepth(B, root, depthB);
+		if(node==A || node==B) {
+			return node;
+		}
 
-		if(!foundA || !foundB) {
+		boolean Aleft = find(A, node.left);
+		boolean Aright = find(A, node.right);
+		boolean Bleft = find(B, node.left);
+		boolean Bright = find(B, node.right);
+
+		if(Aleft && Bleft) {
+			return LCA(A, B, node.left);
+		} else if(Aright && Bright) {
+			return LCA(A, B, node.right);
+		} else if((Aleft && Bright) || (Aright && Bleft)) {
+			return node;
+		} else {
 			return null;
 		}
-		
-		if(depthA.value() > depthB.value()) {
-			A = moveUp(A, depthB.value(), depthA.value());
-		} else if(depthB.value() > depthA.value()) {
-			B= moveUp(B, depthA.value(), depthB.value());
-		}
-
-		while(A!=B && A!=null && B!=null) {
-			A = A.parent;	
-			B = B.parent;
-	 	}
-
-		return A;	
 	}
 
 
-	public boolean findDepth(Node node, Node curNode, MutableInt depth) {
-		 if(curNode==null || node==null){
+
+	public boolean find(Node node, Node root) {
+		if(root == null) {
 			return false;
-		 }
-
-		 if(curNode==node) {
-			return true; 
-		}
-		
-		int temp = depth.value();
-		boolean foundLeft = findDepth(node, curNode.left, depth.add(1));
-		if(foundLeft) {
-			return foundLeft;
 		}
 
-		depth.reset(temp);
-		boolean foundRight = findDepth(node, curNode.right, depth.add(1));
-		return foundRight;
-	}
-
-	public Node moveUp(Node node, int targetDepth, int curDepth) {
-
-		if(targetDepth>=curDepth) {
-			return null;
+		if(root==node) {
+			return true;
 		}
 
-		while(node!=null && targetDepth<curDepth) {
-			node = node.parent;
-			curDepth = curDepth - 1;
-		}
-		
-		return node;
+		return find(node, root.left) || find(node, root.right);
 	}
 	
+	
+	public boolean isSubTree(Node node1, Node root2) {
+		if(node1==null) {
+			return false;
+		}
+
+		if(node1.data.equals(root2.data)) {
+			if(treeMatch(node1, root2)) {
+				return true;
+			}
+		}
+
+		return isSubTree(node1.left, root2) ||
+				isSubTree(node1.right, root2);
+	}
+
+
+	public boolean treeMatch(Node node1, Node node2) {
+		if(node2==null) {
+			return true;
+		}
+
+		if(node1==null){
+			return false;
+		}
+
+		if(node1.data.equals(node2.data)) {
+			return treeMatch(node1.left, node2.left) && treeMatch(node1.right, node2.right);
+		}
+
+		return false;	
+	}
+	
+	public void printSumPaths(Node<Integer> node, int sum) {
+		
+		if(node==null) {
+			return;
+		}
+
+		printSumPaths(node, sum, "");
+		printSumPaths(node.left, sum);
+		printSumPaths(node.right, sum);
+
+	}
+
+	public void printSumPaths(Node<Integer> node, int sum, String pathBuilder) {
+		if(node==null){
+			return;
+		}	
+
+		int diff = sum-(node.data);
+		
+
+		String newPath = pathBuilder + "->" + node.data;
+		if(diff==0) {
+			System.out.println(newPath);
+		}
+
+		printSumPaths(node.left, diff, newPath);
+		printSumPaths(node.right, diff, newPath);
+
+	}
 
 }
 
