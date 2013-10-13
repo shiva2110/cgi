@@ -1,36 +1,171 @@
 
-  
-public T successor(Node<T> node) {
-	if(node.right!=null) {
-		node = node.right;
-		while(node.left!=null) {
-			node = node.left;
-		}
-		return node.data;
-	} else {
-		while(node.parent!=null && node.parent.left!=node){
-			node = node.parent;
-		}
-		
-		if(node.parent!=null) {
-			return node.parent.data;
-		}
-		return null;		
-	}	
+  1001
+
+0,1,2,3
+
+  0101
+
+  01
+
+public class bitPos {
+	public int pos0;
+	public int pos1;
+
 }
 
-public Node find(Node node, int data) {
-	if(node==null) {
-		return null;
+
+public int nextSmallest(int N) {
+
+	//reduce power
+	int pos = findPosFromRight(1, N);
+	if(pos==-1) {
+		return -1;
+	}	
+	int result;
+	result =  move1ToPreviousBit(pos, pos-1, N);
+
+	//move 1s closer to the reduced power (find the maximum number in reduced power)
+	int rightBoundaryLength = pos-1;
+	while(true) {
+		bitPos bitPos = findBitPosFromRight(N, rightBoundaryLength);
+		if(bitPos.pos0 < bitPos.pos1) {
+			break;
+		}
+		result = swapPos(bitPos, N);
+		rightBoundaryLength = bitPos.pos0;
 	}
 
-	if(node.data.equals(data)) {
-		return node;
+	return result;
+	
+	
+}
+
+
+public bitPos findBitPosFromRight(int N, int rightBoundaryLength) {
+	
+	bitPos pos = new bitPos();
+	int index = -1;
+	while(N!=0 && index!=rightBoundaryLength) {
+		N=N>>1;
+		index++;
+		if(N%2==0) {
+			pos.pos0 = index;
+		} else {
+			pos.pos1 = index;
+		}
+	}
+
+	return bitPos;
+}
+
+
+
+
+public int findPosFromRight(int bit, int N){
+	int pos = -1; int pos = -1;
+	boolean precededBy0 = false;
+
+	while(N!=0) {
+		pos++;
+		if(N%2==1){
+			if(precededBy0) {
+				pos1=pos;
+			}
+			precededBy0 = false;	
+		} else {
+			precededBy0 = true;
+		}
+		N>>1;
+	}
+
+	return pos1;
+}
+
+public int move1ToPreviousBit(int bitPos, int prevBitPos, int N) {
+
+	int mask = prepareSwapMask(bitPos, prevBitPos);
+	return xor(mask, N);
+
+}
+
+/**
+
+Creates binary number:
+1. With same number of binary digits as origNumber.
+2. Creates bit 1 in bitPos and prevBitPos, and 0s at all other pos.
+**/
+
+public int prepareSwapMask(int bitPos, int prevBitPos, int origNumber){
+
+	if(bitPos <= prevBitPos) {
+		throw new Exception("arguments for prepareSwapMask are wrong");
+	}
+
+	int length = 0;
+	while(origNumber!=0) {
+		origNumber >> 1;
+		length++;
+	}
+
+	if(length <= bitPos) {
+		throw new Exception("arguments for prepareSwapMask are wrong");
+	}
+
+	int diff = (bitPos - prevBitPos);
+	int N=1;
+	while(diff>0) {
+		N=N << 1;
+		diff--;
+		length--;
+	}
+
+	N = N|1;
+	length--;
+
+	while(length!=0) {
+		N = N << 1;
+		length--;
 	}
 	
-	if(data<node.data) {
-		find(node.left, data);
-	} else {
-		find(node.right, data);
-	}
+	
+	return N;	
+	
 }
+
+public int xor(int i, int j){
+	return (!(i&j)&(i|j));
+}
+
+/**
+swap positions of 0 & 1 in the given bit positions in number N.
+
+**/
+public int swapPos(bitPos, N){
+	
+
+}
+
+1001
+1100
+----
+0101
+----
+
+1001
+1100
+----
+1000 - 0111 (!and)
+----
+
+
+1001
+1100
+----
+1101 - or
+----
+
+1101
+0111 - and
+----
+0101
+----

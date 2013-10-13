@@ -102,5 +102,47 @@ public class bits {
 		}
 		return bitCount;
 	}
+	
+	
+	public bitPos findBitPosFromRight(int N, int rightBoundaryLength) {
+		
+		bitPos pos = new bitPos();
+		int index = -1;
+		while(N!=0 && index!=rightBoundaryLength) {
+			index++;
+			if(N%2==0) {
+				pos.pos0 = index;
+			} else {
+				pos.pos1 = index;
+			}
+			
+			N=N>>1;
+		}
+
+		return pos;
+	}
+	
+	
+	public int findPosFromRight(int bit, int N){
+		int pos = -1; int pos1 = -1;
+		boolean precededBy0 = false;
+
+		while(N!=0) {
+			pos++;
+			if(N%2==0){
+				if(precededBy0) {
+					pos1=pos;
+				}
+				precededBy0 = false;	
+			} else {
+				precededBy0 = true;
+			}
+			N=N>>1;
+		}
+		return pos1;
+	}
+
+		
+
 
 }
