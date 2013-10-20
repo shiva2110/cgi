@@ -1,171 +1,299 @@
-
-  1001
-
-0,1,2,3
-
-  0101
-
-  01
-
-public class bitPos {
-	public int pos0;
-	public int pos1;
-
-}
+Oct 19 (Saturday) : Chapter 5, 7, 8
+Oct 20 (Sunday): Chapter 9, 10
+Oct 21 (Monday)
+Oct 22 (Tuesday)
+Oct 23 (Wednesday) : Chapter 11
+Oct 24 (Thursday): Chapter 12
+Oct 25 (Friday): Chapter 13, 14, 15
+Oct 26 (Saturday): Chapter 16, 17, 18
+Oct 27 (Sunday): Chapter 19, 20
 
 
-public int nextSmallest(int N) {
-
-	//reduce power
-	int pos = findPosFromRight(1, N);
-	if(pos==-1) {
-		return -1;
-	}	
-	int result;
-	result =  move1ToPreviousBit(pos, pos-1, N);
-
-	//move 1s closer to the reduced power (find the maximum number in reduced power)
-	int rightBoundaryLength = pos-1;
+public int findLargest(int N) {
+	bitPos pos = find0PrecededBy1(N);
+	if(pos.pos0 == -1 || pos.pos1==-1) {
+		throw new Exception("No number found larger than N with same number of bits");
+	}
+	int result = swap(pos, N);
+	int rightBoundary = pos.pos1;
 	while(true) {
-		bitPos bitPos = findBitPosFromRight(N, rightBoundaryLength);
-		if(bitPos.pos0 < bitPos.pos1) {
+		bitPos p = find1PrecededBy0(result, rightBoundary);
+		if(p.pos0==-1 || p.pos0==-1 || (p.pos1 < p.pos0)) {
 			break;
 		}
-		result = swapPos(bitPos, N);
-		rightBoundaryLength = bitPos.pos0;
+		result = swap(p, result);
 	}
 
 	return result;
-	
-	
 }
 
-
-public bitPos findBitPosFromRight(int N, int rightBoundaryLength) {
-	
+public bitPos find1PrecededBy0(int N, int rightBoundary) {
+	boolean precededBy0 =false;
+	int index =0;
 	bitPos pos = new bitPos();
-	int index = -1;
-	while(N!=0 && index!=rightBoundaryLength) {
-		N=N>>1;
-		index++;
+
+	while(N!=0 && index!=rightBoundary) {
 		if(N%2==0) {
-			pos.pos0 = index;
-		} else {
-			pos.pos1 = index;
-		}
-	}
-
-	return bitPos;
-}
-
-
-
-
-public int findPosFromRight(int bit, int N){
-	int pos = -1; int pos = -1;
-	boolean precededBy0 = false;
-
-	while(N!=0) {
-		pos++;
-		if(N%2==1){
-			if(precededBy0) {
-				pos1=pos;
-			}
-			precededBy0 = false;	
-		} else {
 			precededBy0 = true;
+			pos.pos0  = index;
+		} else {
+			if(precededBy0) {
+				pos.pos1 = index;
+				precededBy0 = false;
+			}
+			precededBy0= false;
 		}
-		N>>1;
+		N=N >> 1;
+		index++;
 	}
 
-	return pos1;
+	return pos;
 }
 
-public int move1ToPreviousBit(int bitPos, int prevBitPos, int N) {
 
-	int mask = prepareSwapMask(bitPos, prevBitPos);
+public bitPos find0PrecededBy1(int N) {
+	bitPos pos = new bitPos();
+	boolean precededBy1 = false;
+	int index = 0;
+	while(N!=0) {	
+		if(N%2==1){
+			pos.pos1 = index;
+			precededBy1 = true;
+		} else {
+			if(precededBy1) {
+				pos.pos0 = index;
+				break;
+			}
+			precededBy1 = false;
+		}		
+	}
+
+	return pos;
+}
+
+public int swap(bitPos pos, int N){
+	int mask = prepareMask(pos, N);
 	return xor(mask, N);
-
 }
 
-/**
 
-Creates binary number:
-1. With same number of binary digits as origNumber.
-2. Creates bit 1 in bitPos and prevBitPos, and 0s at all other pos.
-**/
-
-public int prepareSwapMask(int bitPos, int prevBitPos, int origNumber){
-
-	if(bitPos <= prevBitPos) {
-		throw new Exception("arguments for prepareSwapMask are wrong");
-	}
-
-	int length = 0;
-	while(origNumber!=0) {
-		origNumber >> 1;
+public int prepareMask(int bitPos, int N) {
+	int length=0;
+	while(N!=0){
 		length++;
+		N >> 1;	
 	}
 
-	if(length <= bitPos) {
-		throw new Exception("arguments for prepareSwapMask are wrong");
+
+	int result = 0;
+	if(bitPos.pos0==(length-1) || bitPos.pos1==(length-1)) {
+		result =1 ;		
 	}
 
-	int diff = (bitPos - prevBitPos);
-	int N=1;
-	while(diff>0) {
-		N=N << 1;
-		diff--;
-		length--;
+
+	for(int i=(length-2); i>=0; i--) {
+		if(i==bitPos.pos0 || i==bitPos.pos1){
+			result = result>>1;
+			result = result | 1;
+		} else {
+			result = result >> 1;
+		}
 	}
 
-	N = N|1;
-	length--;
-
-	while(length!=0) {
-		N = N << 1;
-		length--;
-	}
-	
-	
-	return N;	
-	
+	return result;
 }
 
-public int xor(int i, int j){
-	return (!(i&j)&(i|j));
-}
 
-/**
-swap positions of 0 & 1 in the given bit positions in number N.
+public int swapAdjacent(int N) {
+	int left = N << 1;
+	int right = N >> 1;
 
-**/
-public int swapPos(bitPos, N){
-	
+	return left | right;	
 
 }
 
-1001
-1100
-----
-0101
-----
+public class BinaryArray {
+	final int size = 10
+	int[] A = new int[size];
 
-1001
-1100
-----
-1000 - 0111 (!and)
-----
+	public int size() {
+		return size;
+	}
+
+	public int get(int index, int bitIndex) {
+		if(index>=size) {
+			throw Exception("out of bounds");
+		}
+		int num = A[index];
+		
+		while(num!=0 && bitIndex!=0) {
+			bitIndex--;
+			num >> 1;
+		}
+		
+		return num & 1;
+	}
+
+}
 
 
-1001
-1100
-----
-1101 - or
-----
+public int findMissingNumber(BinaryArray array) {
+	int size = array.size();
+	int maxBit;
+	while(size!=0) {
+		maxBit++;
+		size >> 1;
+	}
 
-1101
-0111 - and
-----
-0101
-----
+	int onesPerDigit = 2 ^ (maxBit -1);
+	int onesPerLastDigit = (array.size()-1) - (2 ^ (maxBit -1)) + 1;
+	int[] bitCounts = new int[maxBit];
+	for(int i=0; i<array.size(); i++) {
+		for(int j=0; j<maxBit; j++) {
+			int bit = array.get(i, j);
+			if(bit==1) {
+				bitCounts[j]++;
+			}
+		}
+	}
+
+	int missingNumber = 0;
+	for(int i=(bitCounts.length-1); i>=0; i--) {
+		if(i==(bitCounts.length-1) && bitCounts[i]<onesPerLastDigit) {
+			missingNumber =1 ;
+			continue;
+		}
+		missingNumber = missingNumber << 1;
+		if(bitCounts[i] < onesPerDigit) {
+			missingNumber = missingNumber | 1;
+		}
+	}
+
+	return missingNumber;
+
+}
+
+
+public enum CardType {
+	spade, hearts, claver, diamonds;
+}
+
+public enum CardNum {
+	one, two, three, four, five, six, seven, eight, nine, ten, jack, queen, king;
+}
+
+public class Card {
+	CardType type;
+	CardNum num;
+	public Card(CardType type, CardNum num) {
+		this.type = type;
+		this.num = num;
+	}
+
+	@Override
+	public int hashCode() {
+		return this.type.hashCode() % this.num.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if(obj!=null && (obj instanceof Card)) {
+
+			if(obj == card) {
+				return true;
+			}
+
+			Card card = (Card)obj;
+			if(card.type.equals(this.type) && card.num.equals(this.num)){
+				return true;
+			} 
+		}
+
+		return true;
+	}
+}
+
+public class Game {
+	List<Card> cardsOnGround = new ArrayList<Card>();
+	List<Player> players = new ArrayList<Player>();
+	Map<String, Set<Card>> playerCards = new HashMap<String, Set<Card>>();
+
+	Player currentPlayer;
+
+	public Game(List<Card> cards, List<Player> players) {
+
+	}	
+
+	/**
+		Assigns the list of cards to each of the players in the players list
+	*/
+	public void assignCardsToPlayers() {
+
+	}
+
+	protected Set<Card> getPlayerCards(String playerId) {
+		return playerCards.get(playerId);
+	}
+	
+	/**
+		Throws a specific card from a player's set of cards and adds to the cardsOnGround list
+	*/
+	protected void throwCardFromPlayer(String playerId, Card card) {
+
+	}
+
+
+	/**
+		Makes the next player to play the game. 
+	*/
+	protected void moveToNextPlayer() {
+
+	}	
+}
+
+public class Player {
+	String id;
+	Game game;
+
+	public Player(Game game) {
+		this.game = game;
+	}
+
+	public Set<Card> viewCards() {
+		return game.getPlayerCards(this.id);
+	}
+
+	public void throwCard(Card card) {
+		if(game.currentPlayer.equals(this)) {
+			this.game.throwCardFromPlayer(id, card);
+		}
+		
+	}
+}
+
+
+public class Rummy extends Game {
+
+	
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
