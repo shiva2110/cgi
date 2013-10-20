@@ -174,107 +174,106 @@ public int findMissingNumber(BinaryArray array) {
 }
 
 
-public enum CardType {
-	spade, hearts, claver, diamonds;
-}
+public class Pos {
+	int x;
+	int y;
 
-public enum CardNum {
-	one, two, three, four, five, six, seven, eight, nine, ten, jack, queen, king;
-}
-
-public class Card {
-	CardType type;
-	CardNum num;
-	public Card(CardType type, CardNum num) {
-		this.type = type;
-		this.num = num;
+	public Pos(int x, int y) {
+		this.x = x;
+		this.y = y;
 	}
 
-	@Override
-	public int hashCode() {
-		return this.type.hashCode() % this.num.hashCode();
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if(obj!=null && (obj instanceof Card)) {
-
-			if(obj == card) {
-				return true;
-			}
-
-			Card card = (Card)obj;
-			if(card.type.equals(this.type) && card.num.equals(this.num)){
-				return true;
-			} 
+	public boolean equals(Object pos) {
+		if(!(pos instanceof Pos)) {
+			return false;
 		}
 
-		return true;
+		if(pos==this) {
+			return true;
+		}
+
+		Position p = (Position) pos;
+
+		return this.x = p.x && this.y = p.y;	
 	}
 }
 
-public class Game {
-	List<Card> cardsOnGround = new ArrayList<Card>();
-	List<Player> players = new ArrayList<Player>();
-	Map<String, Set<Card>> playerCards = new HashMap<String, Set<Card>>();
 
-	Player currentPlayer;
+public interface Coin {
+	public boolean isValidMove(Pos curPos, Pos prevPos);
+}
 
-	public Game(List<Card> cards, List<Player> players) {
 
-	}	
-
-	/**
-		Assigns the list of cards to each of the players in the players list
-	*/
-	public void assignCardsToPlayers() {
-
-	}
-
-	protected Set<Card> getPlayerCards(String playerId) {
-		return playerCards.get(playerId);
-	}
+public class Bishop implements Coin {
 	
 	/**
-		Throws a specific card from a player's set of cards and adds to the cardsOnGround list
+		Implements logic for determining if the move to current pos is valid for a bishop
 	*/
-	protected void throwCardFromPlayer(String playerId, Card card) {
+	public boolean isValidMove(Pos curPos, Pos prevPos) {
 
 	}
+	
+}
 
 
+public class Rook implements Coin {
+	
 	/**
-		Makes the next player to play the game. 
+		Implements logic for determining if the move to current pos is valid for a Rook
 	*/
-	protected void moveToNextPlayer() {
+	public boolean isValidMove(Pos curPos, Pos prevPos) {
 
-	}	
+	}
+	
 }
 
 public class Player {
 	String id;
-	Game game;
+	String color;
+	Map<Coin, Pos> coinPos = new HashMap<Coin, Pos>();
 
-	public Player(Game game) {
-		this.game = game;
+	private Player() {
 	}
 
-	public Set<Card> viewCards() {
-		return game.getPlayerCards(this.id);
+	public static Player getBlackPlayer(String id) {
+		Player player = new Player();
+		player.id = this.id;
+		player.color = "black";
+		
+		coinPos.put(new Rook(), new Pos(0,0));
+		coinPos.put(new Knight(), new Pos(0,1));
+		coinPos.put(new Bishop(), new Pos(0,2));
+		...
+		...
+		
 	}
 
-	public void throwCard(Card card) {
-		if(game.currentPlayer.equals(this)) {
-			this.game.throwCardFromPlayer(id, card);
-		}
+	public static Player getWhitePlayer(String id) {
+		Player player = new Player();
+		player.id = this.id;
+		player.color = "white";
+		
+		coinPos.put(new Rook(), new Pos(7,0));
+		coinPos.put(new Knight(), new Pos(7,1));
+		coinPos.put(new Bishop(), new Pos(7,2));
+		...
+		...
 		
 	}
 }
 
+pub
 
-public class Rummy extends Game {
 
-	
+public class Game {
+
+	Player blackPlayer;
+	Player whitePlayer;
+
+	String nextPlayerId;
+
+	public Game(
+
 
 }
 
@@ -282,6 +281,8 @@ public class Rummy extends Game {
 
 
 
+
+ 
 
 
 
