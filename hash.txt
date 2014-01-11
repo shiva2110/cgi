@@ -1,0 +1,148 @@
+public interface Map<K, V> {
+	
+	public void removeKey(K key);
+
+	public void put(K key, V value);
+
+	public V get(K key);
+
+	public boolean containsKey(K key);
+
+	public boolean containsValue(V value);
+
+	public Set<K> getKeySet();
+
+}
+
+
+
+public class KeyValue<K, V> {
+	
+	public KeyValue<K, V>(K key, V value) {
+
+
+	}
+}
+
+public class HashMap<K, V> {
+
+	public int initCapacity = 10;	
+	public double loadFactor = 0.75;
+	LinkedList<V>[] listArr;
+
+	public int curSize = 0;
+	public int curCapacity = initCapacity;
+
+	public HashMap<K, V>() {
+		listArr = new LinkedList<V>[initCapacity];
+	}
+
+	public HashMap<K, V>(int capacity, double loadFactor) {
+		this.initCapacity = capacity;
+		this.loadFactor = loadFactor;	
+		listArr = new LinkedList<V>[initCapacity];
+		this.curCapacity = initCapacity;	
+	}
+
+	
+	@Override
+	public void put(K key, V value) {
+		double idealSize = curCapacity * loadFactor;
+		if(curSize > (curCapacity*loadFactor)) {
+			rehash();
+		}
+
+		int index = key.hashCode()%curCapacity;
+		insert(index, value);
+		curSize++;
+	}
+
+	private void insert(int index, V value) {
+		if(listArr[index]==null) {
+			listArr[index] = new LinkedList<V>();
+		}
+
+		if(!listArr[index].contains(value)) {
+			listArr[index].add(value);
+		}
+		
+	}
+
+	private void rehash() {
+		int newCapacity = curCapacity + initCapacity;
+		LinkedList<V>[] listArr newArr = new LinkedList<V>[newCapacity];
+		
+		for(int index=0; index<curCapacity; index++) {
+			List<V> values = listArr[index].getAllValues();
+			for(V value: values) {
+				int newIndex = 
+			}
+		}
+	}
+	
+}
+
+public class LinkedList<T> {
+
+	public Node<T> head;
+
+	public void add(T data) {
+		this.head = new Node<T>(data, this.head);
+	}
+
+	public void remove(T data) {
+		Node<T> node = this.head;
+
+		if(node!=null && node.data.equals(data)) {
+			node = node.next;
+			this.head = node;
+			return;
+		}
+
+		while(node!=null && node.next!=null) {
+			if(node.next.data.equals(data)) {
+				node.next = node.next.next;
+				return;
+			}
+			node = node.next;
+		}
+	}
+
+	public boolean contains(T data) {
+		Node<T> node = this.head;
+
+		if(node!=null && node.data.equals(data)) {
+			return true;
+		}
+
+		while(node!=null && node.next!=null) {
+			if(node.next.data.equals(data)) {
+				return true;
+			}
+			node = node.next;
+		}
+
+		return false;
+	}
+
+	public List<T> getAllValues() {
+		Node<T> node = this.head;
+		List<T> list = new ArrayList<V>();
+		while(node!=null) {
+			list.add(node.data);
+		}
+
+		return list;
+	}
+
+}
+
+public class Node<T> {
+	public Node<T> next;
+	public T data;
+
+	public Node<T>(T data, Node<T> next) {
+		this.data = data;
+		this.next = next;
+	}
+}
