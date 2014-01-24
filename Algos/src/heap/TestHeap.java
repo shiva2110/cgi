@@ -18,5 +18,17 @@ public class TestHeap {
 		
 		heap.print();
 		
+		System.out.println("==========================");
+		
+		heap.update(3, new Float(1.003));
+		heap.print();
+		
+		heap.update(1, new Float(1024.67));
+		System.out.println("==========================");
+		heap.print();
+		
+		
+		
+		
 	}
 }

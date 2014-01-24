@@ -10,14 +10,14 @@ public class Heap<T> {
 	Comparator<T> comparer;
 	
 	public class Data<T> {
-		T val;
+		public T val;
 		public Data(T val) {
 			this.val = val;
 		}
 	}
 	
 	
-	Data<T>[] arr;
+	public Data<T>[] arr;
 	
 	public Heap(int size, Comparator<T> comparer) {
 		this.arr = new Data[size];
@@ -37,6 +37,7 @@ public class Heap<T> {
 	}
 	
 	public void print() {
+		levels = new ArrayList<String>();
 		print(0, 0);
 		for(String s : levels) {
 			System.out.println(s);
@@ -59,16 +60,16 @@ public class Heap<T> {
 		print(level+1, right(index));
 	}
 	
-	public void add(T val) {
+	public int add(T val) {
 		if(heapSize==arr.length) {
 			System.out.println("max limit for adding has reached!");
-			return;
+			return -1;
 		}
 		
 		arr[heapSize] = new Data(val);
 		heapSize ++ ;
 		
-		heapifyUp(heapSize-1);
+		return heapifyUp(heapSize-1);
 	}
 	
 	public T min() {
@@ -92,6 +93,21 @@ public class Heap<T> {
 		heapifyDown(0);
 		
 		return min;
+	}
+	
+	
+	public int  update(int index, T newVal) {
+		if(index >= heapSize) {
+			return -1;
+		}
+		
+		if(this.comparer.compare(newVal, arr[index].val) < 0) {
+			arr[index] = new Data(newVal);
+			return heapifyUp(index);
+		} else if(this.comparer.compare(newVal, arr[index].val) > 0) {
+			arr[index] = new Data(newVal);
+			heapifyDown(index);
+		}
 	}
 	
 	public void heapifyDown(int index) {
@@ -121,10 +137,10 @@ public class Heap<T> {
 		
 	}
 	
-	private void heapifyUp(int index) {
+	private int heapifyUp(int index) {
 		if(index > heapSize) {
 			System.out.println("heapifyUp - index is more than heapSize!");
-			return;
+			return index;
 		}
 		
 		int parent = parent(index);
@@ -133,8 +149,10 @@ public class Heap<T> {
 			arr[parent] = arr[index];
 			arr[index] = temp;
 			
-			heapifyUp(parent);
+			return heapifyUp(parent);
 		}
+		
+		return parent;
 		
 	
 	}
